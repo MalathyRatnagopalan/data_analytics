@@ -1,0 +1,873 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Writing data to and reading data from a Database using Python"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Libraries and settings"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Libraries\n",
+    "import os\n",
+    "import sqlite3\n",
+    "import fnmatch\n",
+    "import numpy as np\n",
+    "import pandas as pd\n",
+    "import matplotlib.pyplot as plt\n",
+    "\n",
+    "# Ignore warnings\n",
+    "import warnings\n",
+    "warnings.filterwarnings(\"ignore\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Create sqlite data base"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "/workspaces/data_analytics/Week_13/6_Data_Storage_SQLITE\n",
+      "comparis_database.db\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Get current working directory\n",
+    "print(os.getcwd())\n",
+    "\n",
+    "# Create data base\n",
+    "conn = sqlite3.connect('comparis_database.db') \n",
+    "cursor = conn.cursor()\n",
+    "\n",
+    "# Show dbs in the directory\n",
+    "flist = fnmatch.filter(os.listdir('.'), '*.db')\n",
+    "for i in flist:\n",
+    "    print(i)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Create SQL-table in the database"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "cursor.execute('''CREATE TABLE IF NOT EXISTS apartments_table ( OrderId VARCHAR(50),\n",
+    "                                                                Brand VARCHAR(50),\n",
+    "                                                                Name_Details_Raw VARCHAR(50),\n",
+    "                                                                Ps INT(10),\n",
+    "                                                                Km INT(10),\n",
+    "                                                                Reg_Year INT(10),\n",
+    "                                                                Price INT(10),\n",
+    "                                                                Gear_Type VARCHAR(50),\n",
+    "                                                                Ps_Cat VARCHAR(50),\n",
+    "                                                                Fuel_Type_Benzin INT(10),\n",
+    "                                                                Fuel_Type_Diesel INT(10),\n",
+    "                                                                Fuel_Type_Elektro INT(10),\n",
+    "                                                                Lat INT(10),\n",
+    "                                                                Lon INT(10),\n",
+    "                                                                Address VARCHAR(50))''')\n",
+    "# Confirm changes to the table\n",
+    "conn.commit()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Read data from file to data frame"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "(393, 15)\n"
+     ]
+    },
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>web-scraper-order</th>\n",
+       "      <th>brand</th>\n",
+       "      <th>name_details_raw</th>\n",
+       "      <th>ps</th>\n",
+       "      <th>km</th>\n",
+       "      <th>reg_year</th>\n",
+       "      <th>price</th>\n",
+       "      <th>gear_type</th>\n",
+       "      <th>ps_cat</th>\n",
+       "      <th>fuel_type_benzin</th>\n",
+       "      <th>fuel_type_diesel</th>\n",
+       "      <th>fuel_type_elektro</th>\n",
+       "      <th>lat</th>\n",
+       "      <th>lon</th>\n",
+       "      <th>address</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>1704381746-3</td>\n",
+       "      <td>VW</td>\n",
+       "      <td>Golf 2.0 TSI GTI Performance DSG</td>\n",
+       "      <td>245.0</td>\n",
+       "      <td>196000.0</td>\n",
+       "      <td>2017.0</td>\n",
+       "      <td>17900</td>\n",
+       "      <td>Automat</td>\n",
+       "      <td>0 - 249</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>47.052322</td>\n",
+       "      <td>7.611848</td>\n",
+       "      <td>Bernstrasse 137, 3400 Burgdorf</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>1704381753-6</td>\n",
+       "      <td>HONDA</td>\n",
+       "      <td>Stream 2.0i ES (Sport)</td>\n",
+       "      <td>155.0</td>\n",
+       "      <td>172000.0</td>\n",
+       "      <td>2004.0</td>\n",
+       "      <td>2200</td>\n",
+       "      <td>Automat</td>\n",
+       "      <td>0 - 249</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>46.217728</td>\n",
+       "      <td>6.071711</td>\n",
+       "      <td>Chemin Grenet 4a, 1214 Vernier</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>1704381755-7</td>\n",
+       "      <td>FIAT</td>\n",
+       "      <td>500C 0.9 Twinair Turbo Lounge</td>\n",
+       "      <td>105.0</td>\n",
+       "      <td>70500.0</td>\n",
+       "      <td>2016.0</td>\n",
+       "      <td>7500</td>\n",
+       "      <td>Manuell</td>\n",
+       "      <td>0 - 249</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>47.291756</td>\n",
+       "      <td>7.734115</td>\n",
+       "      <td>Gummertliweg 8, 4702 Oensingen</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>1704381758-8</td>\n",
+       "      <td>NISSAN</td>\n",
+       "      <td>Qashqai +2 2.0 dCi 4WD tekna Automatic</td>\n",
+       "      <td>150.0</td>\n",
+       "      <td>299780.0</td>\n",
+       "      <td>2009.0</td>\n",
+       "      <td>4999</td>\n",
+       "      <td>Automat</td>\n",
+       "      <td>0 - 249</td>\n",
+       "      <td>0</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>47.412235</td>\n",
+       "      <td>8.386329</td>\n",
+       "      <td>Bodackerstrasse 14, 8953 Dietikon</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>1704381760-9</td>\n",
+       "      <td>SMART</td>\n",
+       "      <td>fortwo passion</td>\n",
+       "      <td>71.0</td>\n",
+       "      <td>66000.0</td>\n",
+       "      <td>2017.0</td>\n",
+       "      <td>10900</td>\n",
+       "      <td>Automat</td>\n",
+       "      <td>0 - 249</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>47.210270</td>\n",
+       "      <td>7.557408</td>\n",
+       "      <td>Schichtstrasse 1, 4528 Zuchwil</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "  web-scraper-order   brand                        name_details_raw     ps  \\\n",
+       "0      1704381746-3      VW        Golf 2.0 TSI GTI Performance DSG  245.0   \n",
+       "1      1704381753-6   HONDA                  Stream 2.0i ES (Sport)  155.0   \n",
+       "2      1704381755-7    FIAT           500C 0.9 Twinair Turbo Lounge  105.0   \n",
+       "3      1704381758-8  NISSAN  Qashqai +2 2.0 dCi 4WD tekna Automatic  150.0   \n",
+       "4      1704381760-9   SMART                          fortwo passion   71.0   \n",
+       "\n",
+       "         km  reg_year  price gear_type   ps_cat  fuel_type_benzin  \\\n",
+       "0  196000.0    2017.0  17900   Automat  0 - 249                 1   \n",
+       "1  172000.0    2004.0   2200   Automat  0 - 249                 1   \n",
+       "2   70500.0    2016.0   7500   Manuell  0 - 249                 1   \n",
+       "3  299780.0    2009.0   4999   Automat  0 - 249                 0   \n",
+       "4   66000.0    2017.0  10900   Automat  0 - 249                 1   \n",
+       "\n",
+       "   fuel_type_diesel  fuel_type_elektro        lat       lon  \\\n",
+       "0                 0                  0  47.052322  7.611848   \n",
+       "1                 0                  0  46.217728  6.071711   \n",
+       "2                 0                  0  47.291756  7.734115   \n",
+       "3                 1                  0  47.412235  8.386329   \n",
+       "4                 0                  0  47.210270  7.557408   \n",
+       "\n",
+       "                             address  \n",
+       "0     Bernstrasse 137, 3400 Burgdorf  \n",
+       "1     Chemin Grenet 4a, 1214 Vernier  \n",
+       "2     Gummertliweg 8, 4702 Oensingen  \n",
+       "3  Bodackerstrasse 14, 8953 Dietikon  \n",
+       "4     Schichtstrasse 1, 4528 Zuchwil  "
+      ]
+     },
+     "execution_count": 4,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df = pd.read_csv('comparis_prepared_data3.csv', \n",
+    "                  sep=',', \n",
+    "                  encoding='utf-8')[['web-scraper-order', 'brand', 'name_details_raw',\n",
+    "                                    'ps','km','reg_year','price','gear_type','ps_cat','fuel_type_benzin',\n",
+    "                                    'fuel_type_diesel','fuel_type_elektro','lat','lon',\n",
+    "                                     'address']]\n",
+    "print(df.shape)\n",
+    "df.head(5)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Write data to the SQL-table in data base"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "393"
+      ]
+     },
+     "execution_count": 5,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df.to_sql(name = 'comparis_table',\n",
+    "          con = conn,\n",
+    "          index = False,\n",
+    "          if_exists = 'replace')"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Query the SQL-table"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "           OrderId       Brand                         Name_Details_Raw    Ps  \\\n",
+      "0     1704381760-9       SMART                           fortwo passion  71.0   \n",
+      "1    1704381791-20        FORD               Fiesta 1.25 16V Colourline  82.0   \n",
+      "2    1704381837-35  MITSUBISHI              Space Star 1.2 CVT Intense+  71.0   \n",
+      "3    1704381873-48          VW                                     e-Up  82.0   \n",
+      "4    1704381896-56     PEUGEOT                           107 1.0 Trendy  68.0   \n",
+      "5    1704381914-62     CITROEN                                C1 1.0i X  68.0   \n",
+      "6    1704381942-72     PEUGEOT                       108 1.0 VTi Access  69.0   \n",
+      "7    1704382016-99      TOYOTA                 Aygo X 1.0 VVT-i Comfort  72.0   \n",
+      "8   1704382040-107          VW                                     e-Up  83.0   \n",
+      "9   1704382063-115          VW                                     e-Up  82.0   \n",
+      "10  1704382153-147        FORD  Transit Connect Van T230 1.6 TDCi Trend  95.0   \n",
+      "11  1704382222-171        FIAT             500 0.9 Twinair Turbo Lounge  85.0   \n",
+      "12  1704382446-250        FIAT                              500 1.2 Pop  69.0   \n",
+      "13  1704382497-268        OPEL                     Corsa 1.2 TP Edition  75.0   \n",
+      "14  1704382517-275      TOYOTA           Aygo 1.0 VVT-i Trend MultiMode  69.0   \n",
+      "15  1704382539-282     PEUGEOT                   208 1.2 PureTech Style  82.0   \n",
+      "16  1704382659-325      NISSAN     Micra 0.9 IG-T Bose Personal Edition  90.0   \n",
+      "17  1704382761-361          VW         Polo 1.0 TSI BMT Comfortline DSG  95.0   \n",
+      "18  1704382956-430      SUZUKI            Swift 1.2i 16V Sergio Cellano  90.0   \n",
+      "19  1704382993-442     HYUNDAI                            i10 1.2 Style  78.0   \n",
+      "20  1704383034-457     CITROEN                        C3 1.2i Séduction  82.0   \n",
+      "21  1704383052-463          VW             Polo 1.6 TDI BMT Comfortline  90.0   \n",
+      "22  1704383087-476          VW                              Lupo 60 ABS  60.0   \n",
+      "23  1704383112-485      SUZUKI              Swift 1.2i 16V PizSulai 4x4  90.0   \n",
+      "24  1704383136-493          VW                           T4 2.4D syncro  78.0   \n",
+      "25  1704383141-495        OPEL                  Corsa 1.4 TP Silverline  90.0   \n",
+      "26  1704383179-509        FIAT                           Panda 1.1 City  54.0   \n",
+      "27  1704383315-556    DAIHATSU                       Sirion 1.0 eco-top  69.0   \n",
+      "28  1704383372-576     RENAULT                       Clio 1.2 16V Yahoo  75.0   \n",
+      "29  1704383382-580  MITSUBISHI        Colt 1.3 16V Jubilé (35) Allshift  95.0   \n",
+      "30  1704383450-604     PEUGEOT                      206 1.4 16V Premium  88.0   \n",
+      "31  1704383470-611          VW                 Polo 1.0 BMT Comfortline  75.0   \n",
+      "32  1704383473-612  MITSUBISHI          Colt 1.3 16V City Star ClearTec  95.0   \n",
+      "33  1704383487-618        FORD                  Focus 1.6 TDCi Ambiente  90.0   \n",
+      "34  1704383490-619     RENAULT             Kangoo 1.6 16V Privilège 4x4  95.0   \n",
+      "35  1704383493-620         KIA                           Picanto 1.1 EX  65.0   \n",
+      "36  1704383506-624        FIAT              Panda 1.3 16V JTD Cross 4x4  70.0   \n",
+      "37  1704383584-652     HYUNDAI                          i20 1.2 Comfort  86.0   \n",
+      "38  1704383599-657          VW                 Polo 1.4 16V Comfortline  75.0   \n",
+      "39  1704383607-660        OPEL                       Corsa 1.2 16V Club  75.0   \n",
+      "40  1704383624-666          VW             Polo 1.4 16V FSI Comfortline  85.0   \n",
+      "41  1704383647-674      NISSAN                  Micra 1.2 visia (prima)  65.0   \n",
+      "42  1704383751-711          VW                                     e-Up  83.0   \n",
+      "43  1704383811-732        OPEL                    Adam 1.4 ecoFLEX SLAM  87.0   \n",
+      "44  1704383859-750       SMART                           fortwo passion  71.0   \n",
+      "45  1704383880-757      NISSAN                          Micra 1.2 tekna  80.0   \n",
+      "46  1704383933-776      NISSAN               Note 1.2 DIG-S acenta+ CVT  98.0   \n",
+      "47  1704383954-783      SUZUKI          Swift 1.2i Compact+ Allgrip 4x4  90.0   \n",
+      "48  1704384022-807  MITSUBISHI                Colt 1.3 16V Sport motion  95.0   \n",
+      "49  1704384096-832       SMART                             fortwo prime  90.0   \n",
+      "50  1704384136-847  MITSUBISHI                                   i MiEV  67.0   \n",
+      "51  1704384155-853     CITROEN                   C3 1.2i PureTech Shine  82.0   \n",
+      "\n",
+      "          Km  Reg_Year  Price Gear_Type   Ps_Cat  Fuel_Type_Benzin  \\\n",
+      "0    66000.0    2017.0  10900   Automat  0 - 249                 1   \n",
+      "1   281000.0    2011.0   2500   Manuell  0 - 249                 1   \n",
+      "2     1000.0    2023.0  19900   Automat  0 - 249                 1   \n",
+      "3    68500.0    2021.0  16999   Automat  0 - 249                 0   \n",
+      "4    81500.0    2007.0   4400   Manuell  0 - 249                 1   \n",
+      "5   182000.0    2008.0   3900   Manuell  0 - 249                 1   \n",
+      "6    60390.0    2016.0   6375   Manuell  0 - 249                 1   \n",
+      "7     2000.0    2022.0  19900   Automat  0 - 249                 1   \n",
+      "8    68500.0    2021.0  16999   Automat  0 - 249                 0   \n",
+      "9     1100.0    2023.0  30500   Automat  0 - 249                 0   \n",
+      "10   83000.0    2016.0  14900   Manuell  0 - 249                 0   \n",
+      "11   50000.0    2015.0   6800   Manuell  0 - 249                 1   \n",
+      "12  125700.0    2014.0   6300   Manuell  0 - 249                 1   \n",
+      "13     350.0    2023.0  18900   Manuell  0 - 249                 1   \n",
+      "14  122000.0    2017.0   7300   Manuell  0 - 249                 1   \n",
+      "15   71400.0    2017.0  10000   Manuell  0 - 249                 1   \n",
+      "16   97600.0    2018.0  13700   Manuell  0 - 249                 1   \n",
+      "17  134000.0    2019.0  11900   Automat  0 - 249                 1   \n",
+      "18   93000.0    2017.0   9600   Manuell  0 - 249                 1   \n",
+      "19  216000.0    2011.0   1400   Manuell  0 - 249                 1   \n",
+      "20  121609.0    2013.0   4900   Manuell  0 - 249                 1   \n",
+      "21  176429.0    2009.0   5900   Manuell  0 - 249                 0   \n",
+      "22  141170.0    2002.0    499   Manuell  0 - 249                 1   \n",
+      "23  108155.0    2016.0  10898   Manuell  0 - 249                 1   \n",
+      "24  250000.0    1995.0   4500   Manuell  0 - 249                 0   \n",
+      "25  157800.0    2006.0   2980   Manuell  0 - 249                 1   \n",
+      "26  133000.0    2005.0    600   Manuell  0 - 249                 1   \n",
+      "27  180200.0    2008.0   1999   Manuell  0 - 249                 1   \n",
+      "28   48800.0    2013.0   6900   Manuell  0 - 249                 1   \n",
+      "29   60000.0    2012.0   7500   Automat  0 - 249                 1   \n",
+      "30  115000.0    2004.0   3500   Manuell  0 - 249                 1   \n",
+      "31   58800.0    2018.0  13800   Manuell  0 - 249                 1   \n",
+      "32   59445.0    2011.0   5400   Manuell  0 - 249                 1   \n",
+      "33  231000.0    2006.0    999   Manuell  0 - 249                 0   \n",
+      "34   79000.0    2009.0   6390   Manuell  0 - 249                 1   \n",
+      "35   55950.0    2006.0   3450   Manuell  0 - 249                 1   \n",
+      "36   56000.0    2006.0   7880   Manuell  0 - 249                 0   \n",
+      "37  104000.0    2014.0   4900   Manuell  0 - 249                 1   \n",
+      "38   67000.0    2004.0   2700   Manuell  0 - 249                 1   \n",
+      "39  212000.0    2001.0    799   Manuell  0 - 249                 1   \n",
+      "40  200000.0    2004.0   2499   Manuell  0 - 249                 1   \n",
+      "41  192000.0    2009.0    990   Manuell  0 - 249                 1   \n",
+      "42    1100.0    2023.0  30500   Automat  0 - 249                 0   \n",
+      "43   91550.0    2013.0   6700   Manuell  0 - 249                 1   \n",
+      "44   25000.0    2019.0  13780   Automat  0 - 249                 1   \n",
+      "45   42850.0    2011.0   8500   Manuell  0 - 249                 1   \n",
+      "46   55100.0    2016.0  10900   Automat  0 - 249                 1   \n",
+      "47   92300.0    2019.0  13200   Manuell  0 - 249                 1   \n",
+      "48  170000.0    2008.0   3950   Manuell  0 - 249                 1   \n",
+      "49   56500.0    2015.0   9799   Manuell  0 - 249                 1   \n",
+      "50   88000.0    2011.0   3900   Automat  0 - 249                 0   \n",
+      "51   53800.0    2019.0   9999   Manuell  0 - 249                 1   \n",
+      "\n",
+      "    Fuel_Type_Diesel  Fuel_Type_Elektro        Lat       Lon  \\\n",
+      "0                  0                  0  47.210270  7.557408   \n",
+      "1                  0                  0  47.238735  7.963281   \n",
+      "2                  0                  0  47.445953  9.149778   \n",
+      "3                  0                  1  47.217014  8.576250   \n",
+      "4                  0                  0  46.912601  7.714310   \n",
+      "5                  0                  0  47.617020  9.039017   \n",
+      "6                  0                  0  46.224480  6.080033   \n",
+      "7                  0                  0  47.445953  9.149778   \n",
+      "8                  0                  1  47.217014  8.576250   \n",
+      "9                  0                  1  47.537029  7.633535   \n",
+      "10                 1                  0  47.183666  8.027243   \n",
+      "11                 0                  0  47.519054  8.659325   \n",
+      "12                 0                  0  47.164951  7.526493   \n",
+      "13                 0                  0  47.604488  8.688237   \n",
+      "14                 0                  0  47.175648  9.450772   \n",
+      "15                 0                  0  46.598164  6.642411   \n",
+      "16                 0                  0  46.342663  8.976390   \n",
+      "17                 0                  0  47.564335  9.365786   \n",
+      "18                 0                  0  47.227230  8.956616   \n",
+      "19                 0                  0  47.337978  8.763264   \n",
+      "20                 0                  0  47.198147  7.430354   \n",
+      "21                 1                  0  46.354481  6.932366   \n",
+      "22                 0                  0  47.412235  8.386329   \n",
+      "23                 0                  0  46.827312  7.859797   \n",
+      "24                 1                  0  46.536659  6.678226   \n",
+      "25                 0                  0  47.505989  9.029155   \n",
+      "26                 0                  0  46.845394  7.576282   \n",
+      "27                 0                  0  47.281784  7.702002   \n",
+      "28                 0                  0  47.385635  8.505556   \n",
+      "29                 0                  0  47.281784  7.702002   \n",
+      "30                 0                  0  47.454655  8.940751   \n",
+      "31                 0                  0  47.550873  7.857580   \n",
+      "32                 0                  0  47.443989  7.598239   \n",
+      "33                 1                  0  47.202862  8.203765   \n",
+      "34                 0                  0  46.864651  7.198167   \n",
+      "35                 0                  0  46.745571  8.057730   \n",
+      "36                 1                  0  47.107033  8.448854   \n",
+      "37                 0                  0  47.171337  9.480002   \n",
+      "38                 0                  0  46.219658  6.077112   \n",
+      "39                 0                  0  47.644398  9.187562   \n",
+      "40                 0                  0  46.221519  6.092485   \n",
+      "41                 0                  0  47.341946  7.872066   \n",
+      "42                 0                  1  47.537029  7.633535   \n",
+      "43                 0                  0  47.379726  9.653362   \n",
+      "44                 0                  0  47.451118  8.652830   \n",
+      "45                 0                  0  46.220234  6.075229   \n",
+      "46                 0                  0  47.499104  8.809943   \n",
+      "47                 0                  0  46.874775  8.649740   \n",
+      "48                 0                  0  47.015991  7.455813   \n",
+      "49                 0                  0  47.410160  8.573047   \n",
+      "50                 0                  1  47.172718  7.803462   \n",
+      "51                 0                  0  46.907093  7.462740   \n",
+      "\n",
+      "                                          Address  \n",
+      "0                  Schichtstrasse 1, 4528 Zuchwil  \n",
+      "1                      Bruggmatte 11, 6260 Reiden  \n",
+      "2            Bahnhofstrasse 175, 9244 Niederuzwil  \n",
+      "3                  Zugerstrasse 2, 6340 Sihlbrugg  \n",
+      "4                    Dorfstrasse 172, 3534 Signau  \n",
+      "5                Unterdorfstrasse 4, 8556 Illhart  \n",
+      "6               Rue des Voituriers 2, 1217 Meyrin  \n",
+      "7            Bahnhofstrasse 175, 9244 Niederuzwil  \n",
+      "8                  Zugerstrasse 2, 6340 Sihlbrugg  \n",
+      "9              Birsfelderstrasse 50, 4132 Muttenz  \n",
+      "10               Ettiswilerstrasse 1, 6242 Wauwil  \n",
+      "11         Karl-Bügler-Strasse 6, 8413 Neftenbach  \n",
+      "12       Solothurnstrasse 4, 4573 Lohn-Ammannsegg  \n",
+      "13  Schaffhauserstrasse 70, 8451 Kleinandelfingen  \n",
+      "14                              Grabs, 9472 Grabs  \n",
+      "15   2 Chemin du Chêne, 1053 Bretigny sur morrens  \n",
+      "16                   via Chiasso 21b, 6710 Biasca  \n",
+      "17              Arbonerstrasse 8, 8590 Romanshorn  \n",
+      "18           St.Gallerstrasse 36, 8716 Schmerikon  \n",
+      "19        Zürichstrasse 47, 8607 Aathal-Seegräben  \n",
+      "20             Solothurnstrasse 40, 2544 Bettlach  \n",
+      "21             Route du Simplon 32, 1852 Roche VD  \n",
+      "22              Bodackerstrasse 14, 8953 Dietikon  \n",
+      "23                   Färzbach 41d, 6197 Schangnau  \n",
+      "24                Route d'Oron 102, 1000 Lausanne  \n",
+      "25               Wilerstrasse 35, 9554 Tägerschen  \n",
+      "26                Bernstrasse 13A, 3114 Wichtrach  \n",
+      "27             Leenrütimattweg 5, 4704 Niederbipp  \n",
+      "28                 Hardgutstrasse 1a, 8048 Zürich  \n",
+      "29             Leenrütimattweg 5, 4704 Niederbipp  \n",
+      "30                Ribistrasse 1a, 8362 Balterswil  \n",
+      "31               Zeiningerstrasse 14, 4313 Möhlin  \n",
+      "32               Baselstrasse 67, 4203 Grellingen  \n",
+      "33          Industriestrasse 12, 6215 Beromünster  \n",
+      "34                     Luggiwil 15, 3186 Düdingen  \n",
+      "35               Hauptstrasse 306, 3855 Brienz BE  \n",
+      "36        Zugerstrasse 55, 6403 Küssnacht am Rigi  \n",
+      "37             Industriestrasse 18, 9470 Buchs SG  \n",
+      "38                  Chemin Delay 22, 1214 Vernier  \n",
+      "39             Seetalstrasse 41, 8280 Kreuzlingen  \n",
+      "40          Chemin Champs Prévost 6, 1214 Vernier  \n",
+      "41   Untere Dünnernstrasse, 4612 Wangen bei Olten  \n",
+      "42             Birsfelderstrasse 50, 4132 Muttenz  \n",
+      "43               Palmenstrasse 1, 9444 Diepoldsau  \n",
+      "44                Hakabstrasse 5, 8309 Nürensdorf  \n",
+      "45                  Chemin Delay 23, 1214 Vernier  \n",
+      "46             St. Gallerstrasse 7, 8352 Elsau ZH  \n",
+      "47               Gotthardstrasse 58, 6460 Altdorf  \n",
+      "48            Bernstrasse 50, 3053 Münchenbuchsee  \n",
+      "49              Ueberlandstrasse 210, 8051 Zürich  \n",
+      "50             Zielackerstrasse 21, 4934 Madiswil  \n",
+      "51                   Holzmattweg 9, 3122 Kehrsatz  \n"
+     ]
+    }
+   ],
+   "source": [
+    "# Query the SQL-table\n",
+    "cursor.execute('SELECT * FROM comparis_table WHERE Ps < 100')\n",
+    "\n",
+    "df = pd.DataFrame(cursor.fetchall(), \n",
+    "                  columns=['OrderId','Brand','Name_Details_Raw','Ps','Km','Reg_Year','Price','Gear_Type',\n",
+    "                          'Ps_Cat','Fuel_Type_Benzin','Fuel_Type_Diesel','Fuel_Type_Elektro','Lat',\n",
+    "                          'Lon','Address'])    \n",
+    "print(df)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Plot histogramm of used car prices"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "image/png": "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22/Xvn37YlUnAACogsoVVNasWaO7775bjRo10tSpUzV+/Hjt2LFDCxYs0N69ezVw4MBY1QkAAKqgqC7vnTp1qnJycrRlyxb169dP//znP9WvX7/Q+68zMzM1c+ZMZWRkxLJWAABQxUQVVKZPn6477rhDw4cPV6NGjUodk5qaqhdffLFcxQEAgKotqqCybdu2847xer0aNmxYNNMDAABIivIalZycHM2ePbvE8tmzZ+sf//hHuYsCAACQogwqU6ZMUb169UosT01N1R//+MdyFwUAACBFGVR2796tzMzMEsubNWum3bt3l7soAAAAKcqgkpqaqo0bN5ZYvmHDBtWtW7fcRQEAAEhRBpUhQ4bonnvu0ZIlS1RUVKSioiItXrxYY8eO1c9+9rNY1wgAAKqoqN718+ijj+rLL79Uz549Q38BMRgM6vbbb+caFQAAEDNRBRWv16vXXntNjz76qDZs2KDExER16NBBzZo1i3V9AACgCosqqBRr1aqVWrVqFataAAAAwkQVVIqKijRz5kwtWrRIBw8eVDAYDFu/ePHimBQHAACqtqiCytixYzVz5kz1799f7du3l8vlinVdAAAA0QWVWbNm6fXXX1e/fv1iXQ8AAEBIVG9P9nq9atGiRaxrAQAACBNVULnvvvv0zDPPyBgT63oAAABConrpZ/ny5VqyZInmzZundu3aqVq1amHr33zzzZgUBwAAqraogkqtWrV04403xroWAACAMFEFlZycnFjXAQAAUEJU16hIUiAQ0MKFCzVjxgwdP35ckrR3716dOHEiZsUBAICqLaozKl999ZX69Omj3bt3y+/36/rrr1dycrKefPJJ+f1+Pf/887GuEwAAVEFRnVEZO3asOnfurKNHjyoxMTG0/MYbb9SiRYtiVhwAAKjaojqj8p///EcrVqyQ1+sNW56RkaFvvvkmJoUBAABEdUYlGAyqqKioxPI9e/YoOTm53EUBAABIUQaV3r17a9q0aaHbLpdLJ06c0MSJE/lYfQAAEDNRvfTz9NNPKzs7W23bttWpU6f085//XNu2bVO9evX06quvxrpGAABQRUUVVJo0aaINGzZo1qxZ2rhxo06cOKE777xTQ4cODbu4FgAAoDyiCiqS5PF4dNttt8WyFgAAgDBRBZV//vOf51x/++23R1UMAADA90UVVMaOHRt2+8yZMzp58qS8Xq9q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j7nkkkvMxx9/bP7zn/+YFi1amCFDhoTW5+fnmwYNGpihQ4eaTZs2mVdffdUkJiaaGTNmhMZ89NFHxu12m6eeesp8/vnn5ve//72pVq2a+fTTT+PeA6vO16thw4aZPn36hO1reXl5YWOqSq+ys7NNTk6O2bRpk1m/fr3p16+fadq0qTlx4kRoTEUdexfC856VfvXo0cOMHDkybP/Kz88Pra8q/Zo7d6557733zNatW82WLVvMb3/7W1OtWjWzadMmY0zl26+qXFC54oorzOjRo0O3i4qKTFpampkyZYqNVcXXxIkTzSWXXFLqumPHjplq1aqZ2bNnh5Zt3rzZSDIrV640xpz94ZSQkGD2798fGjN9+nSTkpJi/H6/McaYBx54wLRr1y5s7sGDB5vs7OwYP5r4+uEP32AwaBo2bGj+9Kc/hZYdO3bM+Hw+8+qrrxpjjPn888+NJLN69erQmHnz5hmXy2W++eYbY4wxf/3rX03t2rVD/TLGmAcffNC0bt06dPvWW281/fv3D6una9euZtSoUTF9jLFSVlAZOHBgmfepqr0yxpiDBw8aSWbZsmXGmIo99i7E570f9suYs0Fl7NixZd6nKverdu3a5u9//3ul3K+q1Es/p0+f1tq1a9WrV6/QsoSEBPXq1UsrV660sbL427Ztm9LS0pSVlaWhQ4dq9+7dkqS1a9fqzJkzYT1p06aNmjZtGurJypUr1aFDh7BPC87OzlZBQYE+++yz0Jjvz1E85kLv665du7R///6wx1azZk117do1rD+1atVS586dQ2N69eqlhIQEffLJJ6Ex11xzjbxeb2hMdna2tmzZoqNHj4bGVIYeLl26VKmpqWrdurXuuusuHTlyJLSuKvcqPz9fklSnTh1JFXfsXajPez/sV7F//etfqlevntq3b68JEybo5MmToXVVsV9FRUWaNWuWCgsL1a1bt0q5Xznik2kryuHDh1VUVFTi4/kbNGigL774wqaq4q9r166aOXOmWrdurX379mny5Mm6+uqrtWnTJu3fv19er7fEH3ds0KCB9u/fL0nav39/qT0rXneuMQUFBfr222+VmJgYp0cXX8WPr7TH9v3HnpqaGrbe4/GoTp06YWMyMzNLzFG8rnbt2mX2sHiOC0GfPn100003KTMzUzt27NBvf/tb9e3bVytXrpTb7a6yvQoGg7r33nvVvXt3tW/fXpIq7Ng7evToBfe8V1q/JOnnP/+5mjVrprS0NG3cuFEPPvigtmzZojfffFNS1erXp59+qm7duunUqVO66KKLNGfOHLVt21br16+vdPtVlQoqVVXfvn1D/+/YsaO6du2qZs2a6fXXX79gAwSc6Wc/+1no/x06dFDHjh3VvHlzLV26VD179rSxMnuNHj1amzZt0vLly+0u5YJQVr9++ctfhv7foUMHNWrUSD179tSOHTvUvHnzii7TVq1bt9b69euVn5+vf//73xo2bJiWLVtmd1lxUaVe+qlXr57cbneJq58PHDighg0b2lRVxatVq5ZatWql7du3q2HDhjp9+rSOHTsWNub7PWnYsGGpPSted64xKSkpF3QYKn5859pnGjZsqIMHD4atDwQCysvLi0kPL+R9MysrS/Xq1dP27dslVc1ejRkzRu+++66WLFmiJk2ahJZX1LF3oT3vldWv0nTt2lWSwvavqtIvr9erFi1aqFOnTpoyZYouueQSPfPMM5Vyv6pSQcXr9apTp05atGhRaFkwGNSiRYvUrVs3GyurWCdOnNCOHTvUqFEjderUSdWqVQvryZYtW7R79+5QT7p166ZPP/007AfMggULlJKSorZt24bGfH+O4jEXel8zMzPVsGHDsMdWUFCgTz75JKw/x44d09q1a0NjFi9erGAwGHoi7datmz788EOdOXMmNGbBggVq3bq1ateuHRpT2Xq4Z88eHTlyRI0aNZJUtXpljNGYMWM0Z84cLV68uMTLWRV17F0oz3vn61dp1q9fL0lh+1dV6dcPBYNB+f3+yrlfxfTS3AvArFmzjM/nMzNnzjSff/65+eUvf2lq1aoVdvVzZXPfffeZpUuXml27dpmPPvrI9OrVy9SrV88cPHjQGHP2rWxNmzY1ixcvNmvWrDHdunUz3bp1C92/+K1svXv3NuvXrzfz58839evXL/WtbPfff7/ZvHmzee655y6YtycfP37crFu3zqxbt85IMlOnTjXr1q0zX331lTHm7NuTa9WqZd5++22zceNGM3DgwFLfnnzZZZeZTz75xCxfvty0bNky7C23x44dMw0aNDC/+MUvzKZNm8ysWbNMjRo1Srzl1uPxmP/93/81mzdvNhMnTnTcW27P1avjx4+b8ePHm5UrV5pdu3aZhQsXmssvv9y0bNnSnDp1KjRHVenVXXfdZWrWrGmWLl0a9nbakydPhsZU1LF3ITzvna9f27dvN3/4wx/MmjVrzK5du8zbb79tsrKyzDXXXBOao6r066GHHjLLli0zu3btMhs3bjQPPfSQcblc5oMPPjDGVL79qsoFFWOMefbZZ03Tpk2N1+s1V1xxhfn444/tLimuBg8ebBo1amS8Xq9p3LixGTx4sNm+fXto/bfffmvuvvtuU7t2bVOjRg1z4403mn379oXN8eWXX5q+ffuaxMREU69ePXPfffeZM2fOhI1ZsmSJufTSS43X6zVZWVkmJyenIh5euS1ZssRIKvE1bNgwY8zZtyg//PDDpkGDBsbn85mePXuaLVu2hM1x5MgRM2TIEHPRRReZlJQUM2LECHP8+PGwMRs2bDBXXXWV8fl8pnHjxuaJJ54oUcvrr79uWrVqZbxer2nXrp1577334va4o3GuXp08edL07t3b1K9f31SrVs00a9bMjBw5ssSTVlXpVWl9khR2XFTksef0573z9Wv37t3mmmuuMXXq1DE+n8+0aNHC3H///WGfo2JM1ejXHXfcYZo1a2a8Xq+pX7++6dmzZyikGFP59iuXMcbE9hwNAABAbFSpa1QAAMCFhaACAAAci6ACAAAci6ACAAAci6ACAAAci6ACAAAci6ACAAAci6ACwHEyMjI0bdo0u8sA4AAEFQBxNXz4cLlcLrlcrtAfUvvDH/6gQCBQ5n1Wr14d9pdyAVRdHrsLAFD59enTRzk5OfL7/Xr//fc1evRoVatWTRMmTAgbd/r0aXm9XtWvX9+mSgE4DWdUAMSdz+dTw4YN1axZM911113q1auX5s6dq+HDh2vQoEF6/PHHlZaWptatW0sq+dLPsWPHNGrUKDVo0EDVq1dX+/bt9e6774bWL1++XFdffbUSExOVnp6ue+65R4WFhRX9MAHEAWdUAFS4xMREHTlyRJK0aNEipaSkaMGCBaWODQaD6tu3r44fP66XX35ZzZs31+effy632y1J2rFjh/r06aPHHntML730kg4dOqQxY8ZozJgxysnJqbDHBCA+CCoAKowxRosWLVJubq5+/etf69ChQ0pKStLf//53eb3eUu+zcOFCrVq1Sps3b1arVq0kSVlZWaH1U6ZM0dChQ3XvvfdKklq2bKk///nP6tGjh6ZPn67q1avH/XEBiB9e+gEQd++++64uuugiVa9eXX379tXgwYM1adIkSVKHDh3KDCmStH79ejVp0iQUUn5ow4YNmjlzpi666KLQV3Z2toLBoHbt2hWPhwOgAnFGBUDcXXfddZo+fbq8Xq/S0tLk8fz/p56kpKRz3jcxMfGc60+cOKFRo0bpnnvuKbGuadOm0RUMwDEIKgDiLikpSS1atIjqvh07dtSePXu0devWUs+qXH755fr888+jnh+As/HSDwBH69Gjh6655hr99Kc/1YIFC7Rr1y7NmzdP8+fPlyQ9+OCDWrFihcaMGaP169dr27ZtevvttzVmzBibKwcQCwQVAI73xhtvqEuXLhoyZIjatm2rBx54QEVFRZLOnnFZtmyZtm7dqquvvlqXXXaZHnnkEaWlpdlcNYBYcBljjN1FAAAAlIYzKgAAwLEIKgAAwLEIKgAAwLEIKgAAwLEIKgAAwLEIKgAAwLEIKgAAwLEIKgAAwLEIKgAAwLEIKgAAwLEIKgAAwLEIKgAAwLH+H7KMEyfeEdXxAAAAAElFTkSuQmCC",
+      "text/plain": [
+       "<Figure size 640x480 with 1 Axes>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "df.Price.plot.hist(grid=True, \n",
+    "                   bins=20, \n",
+    "                   rwidth=0.9,\n",
+    "                   color='#607c8e')\n",
+    "plt.title('Car price')\n",
+    "plt.xlabel('Price')\n",
+    "plt.ylabel('Frequency')\n",
+    "plt.grid(axis='y', alpha=0.75)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## SQL-query to filter all cars with >= 500 hp and where fuel_type is Benzin"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "           OrderId          Brand  \\\n",
+      "0   1704382181-157           LAND   \n",
+      "1   1704382304-199           LAND   \n",
+      "2   1704382510-272           LAND   \n",
+      "3   1704382636-317        FERRARI   \n",
+      "4   1704382715-345        BENTLEY   \n",
+      "5   1704382769-364           LAND   \n",
+      "6   1704382864-397  MERCEDES-BENZ   \n",
+      "7   1704382908-412  MERCEDES-BENZ   \n",
+      "8   1704383498-621        BENTLEY   \n",
+      "9   1704383857-749            BMW   \n",
+      "10  1704383912-769        BENTLEY   \n",
+      "11  1704383957-784        PORSCHE   \n",
+      "12  1704383967-788          ASTON   \n",
+      "13  1704384012-803        PORSCHE   \n",
+      "14  1704384020-806  MERCEDES-BENZ   \n",
+      "\n",
+      "                                     Name_Details_Raw     Ps        Km  \\\n",
+      "0    Range Rover Sport 5.0 V8 S/C ABDynamic Automatic  525.0   58900.0   \n",
+      "1                 Range Rover 5.0 V8 S/C AB Automatic  525.0   29899.0   \n",
+      "2                         Defender 110 525 V8 5.0 AT8  525.0    5600.0   \n",
+      "3                                           F8 Spider  720.0    7600.0   \n",
+      "4                               Continental GT 4.0 V8  507.0   99999.0   \n",
+      "5          Range Rover Sport 5.0 V8 S/C SVR Automatic  575.0   35800.0   \n",
+      "6   CLS Shooting Brake 63 AMG S 4Matic Speedshift MCT  585.0  147500.0   \n",
+      "7         AMG GT C Roadster Edition 50 Speedshift DCT  558.0    8500.0   \n",
+      "8                         Continental Flying Spur 6.0  560.0  160000.0   \n",
+      "9                    M5 xDrive Competition Drivelogic  626.0   61500.0   \n",
+      "10                       Continental GT Speed 6.0 W12  635.0   70600.0   \n",
+      "11                                        911 GT3 PDK  510.0    2500.0   \n",
+      "12               Vanquish S Volante V12 Touchtronic 3  604.0     200.0   \n",
+      "13                                911 GT3 Touring PDK  510.0    2390.0   \n",
+      "14                         E 63 AMG 4Matic Speedshift  557.0  138000.0   \n",
+      "\n",
+      "    Reg_Year   Price Gear_Type      Ps_Cat  Fuel_Type_Benzin  \\\n",
+      "0     2019.0   70990   Automat   250 - 599                 1   \n",
+      "1     2021.0  115900   Automat   250 - 599                 1   \n",
+      "2     2023.0  126900   Automat   250 - 599                 1   \n",
+      "3     2021.0  379000   Automat  600 - 1500                 1   \n",
+      "4     2013.0   72899   Automat   250 - 599                 1   \n",
+      "5     2019.0  104800   Automat   250 - 599                 1   \n",
+      "6     2014.0   37500   Automat   250 - 599                 1   \n",
+      "7     2018.0  129800   Automat   250 - 599                 1   \n",
+      "8     2006.0   21900   Automat   250 - 599                 1   \n",
+      "9     2019.0   99900   Automat  600 - 1500                 1   \n",
+      "10    2015.0   94900   Automat  600 - 1500                 1   \n",
+      "11    2021.0  195990   Automat   250 - 599                 1   \n",
+      "12    2018.0  665000   Automat  600 - 1500                 1   \n",
+      "13    2022.0  218500   Automat   250 - 599                 1   \n",
+      "14    2014.0   38500   Automat   250 - 599                 1   \n",
+      "\n",
+      "    Fuel_Type_Diesel  Fuel_Type_Elektro        Lat       Lon  \\\n",
+      "0                  0                  0  47.520813  7.674279   \n",
+      "1                  0                  0  47.398861  8.178795   \n",
+      "2                  0                  0  47.246483  8.739271   \n",
+      "3                  0                  0  45.984798  8.930483   \n",
+      "4                  0                  0  47.576538  8.314478   \n",
+      "5                  0                  0  47.201397  8.685840   \n",
+      "6                  0                  0  47.369553  8.078813   \n",
+      "7                  0                  0  47.369553  8.078813   \n",
+      "8                  0                  0  47.121334  7.275235   \n",
+      "9                  0                  0  46.220234  6.075229   \n",
+      "10                 0                  0  47.201397  8.685840   \n",
+      "11                 0                  0  47.648472  9.181821   \n",
+      "12                 0                  0  47.648472  9.181821   \n",
+      "13                 0                  0  47.369553  8.078813   \n",
+      "14                 0                  0  47.369553  8.078813   \n",
+      "\n",
+      "                                      Address  \n",
+      "0      Muttenzerstrasse 143, 4133 Pratteln BL  \n",
+      "1           Gewerbestrasse 6, 5702 Niederlenz  \n",
+      "2                Rhynerstrasse 56, 8712 Stäfa  \n",
+      "3   Via Pian Scairolo 26, 6915 Pambio Noranco  \n",
+      "4        Zürcherstrasse, 42, 5330 Bad Zurzach  \n",
+      "5   Obere Schwandenstrasse 2, 8833 Samstagern  \n",
+      "6              Bernstrasse West 60, 5034 Suhr  \n",
+      "7              Bernstrasse West 60, 5034 Suhr  \n",
+      "8                 Pfeidstrasse 31, 2555 Brügg  \n",
+      "9               Chemin Delay 23, 1214 Vernier  \n",
+      "10  Obere Schwandenstrasse 2, 8833 Samstagern  \n",
+      "11         Hafenstrasse 50B, 8280 Kreuzlingen  \n",
+      "12         Hafenstrasse 50B, 8280 Kreuzlingen  \n",
+      "13             Bernstrasse West 60, 5034 Suhr  \n",
+      "14             Bernstrasse West 60, 5034 Suhr  \n"
+     ]
+    }
+   ],
+   "source": [
+    "# SQL-query to filter all cars with >= 500 hp and where fuel_type is Benzin\n",
+    "cursor.execute('SELECT * FROM comparis_table WHERE Ps >= 500 AND Fuel_Type_Benzin IS TRUE''')\n",
+    "\n",
+    "df = pd.DataFrame(cursor.fetchall(), \n",
+    "                  columns=['OrderId','Brand','Name_Details_Raw','Ps','Km','Reg_Year','Price','Gear_Type',\n",
+    "                          'Ps_Cat','Fuel_Type_Benzin','Fuel_Type_Diesel','Fuel_Type_Elektro','Lat',\n",
+    "                          'Lon','Address'])    \n",
+    "print(df)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### SQL-Query to calculate the average price per Fuel_Type (Diesel)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "   Diesel  Average Price\n",
+      "0       1   23505.815126\n"
+     ]
+    }
+   ],
+   "source": [
+    "cursor.execute('SELECT Fuel_Type_Diesel, AVG(Price) FROM comparis_table WHERE Fuel_Type_Diesel IS TRUE''')\n",
+    "\n",
+    "df = pd.DataFrame(cursor.fetchall(), \n",
+    "                  columns=['Diesel', 'Average Price'])    \n",
+    "print(df)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### SQL-Query to calculate the average price per Fuel_Type (Benzin)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 17,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "   Benzin  Average Price\n",
+      "0       1   29030.996078\n"
+     ]
+    }
+   ],
+   "source": [
+    "cursor.execute('SELECT Fuel_Type_Benzin, AVG(Price) FROM comparis_table WHERE Fuel_Type_Benzin IS TRUE''')\n",
+    "\n",
+    "df = pd.DataFrame(cursor.fetchall(), \n",
+    "                  columns=['Benzin', 'Average Price'])    \n",
+    "print(df)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### SQL-Query to calculate the average price per Fuel_Type (Elektro)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 18,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "   Elektro  Average Price\n",
+      "0        1   39814.105263\n"
+     ]
+    }
+   ],
+   "source": [
+    "cursor.execute('SELECT Fuel_Type_Elektro, AVG(Price) FROM comparis_table WHERE Fuel_Type_Elektro IS TRUE''')\n",
+    "\n",
+    "df = pd.DataFrame(cursor.fetchall(), \n",
+    "                  columns=['Elektro', 'Average Price'])    \n",
+    "print(df)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Jupyter notebook --footer info-- (please always provide this at the end of each submitted notebook)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 19,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "-----------------------------------\n",
+      "POSIX\n",
+      "Linux | 6.2.0-1018-azure\n",
+      "Datetime: 2024-01-06 19:05:20\n",
+      "Python Version: 3.10.13\n",
+      "-----------------------------------\n"
+     ]
+    }
+   ],
+   "source": [
+    "import os\n",
+    "import platform\n",
+    "import socket\n",
+    "from platform import python_version\n",
+    "from datetime import datetime\n",
+    "\n",
+    "print('-----------------------------------')\n",
+    "print(os.name.upper())\n",
+    "print(platform.system(), '|', platform.release())\n",
+    "print('Datetime:', datetime.now().strftime(\"%Y-%m-%d %H:%M:%S\"))\n",
+    "print('Python Version:', python_version())\n",
+    "print('-----------------------------------')"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.10.13"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}
